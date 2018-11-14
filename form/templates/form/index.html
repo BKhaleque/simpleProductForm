@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+
+    	<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'> </script>
+        <script>
+            $(document).ready(function() {
+             //console.log("Hello!");
+
+            showItems();
+
+
+
+        });
+		
+        function deleteProduct(clicked_id){
+             $.ajax({
+                type: 'DELETE',
+				dataType: 'json',
+				data: 'id='+clicked_id,
+                success: function() {
+                    $("#tbody").empty();
+                        showItems();
+                    }
+
+                });
+            }
+ 
+
+
+        
+
+        function showItems(){
+
+                        $.ajax({
+                type: 'GET',
+                url: 'http://127.0.0.1:8000/form/data',
+                success: function(data) {
+                    $('#test').append(data);
+                    console.log(data);
+                    $.each(data,function(key,value){
+                        var newDeleteId = value.Name + "delete";
+                        var newUpdateId = value.Name + "update";
+                        var eachrow = "<tr>"
+                        + "<td id = " + value.ID+ ">" + value.ID + "</td>"
+                        + "<td> <a href=/form/"+value.ID+">" + value.Name + "</a></td>"
+                        + "<td> <text id = " + value.name + "price>" + value.Price
+                        + "</text><button onclick= updateProduct(this.id) name = csrfmiddlewaretoken method = PUT id = " + value.ID + "> Update </button>"
+                        + "<button onclick= deleteProduct(this.id) name = csrfmiddlewaretoken method = DELETE id = " + value.ID + "> Delete </button>"
+                        + "</td>"
+                        + "</tr>";
+                        $('#tbody').append(eachrow);
+                    });
+
+                },
+                error: function(error_data){
+                    console.log(error_data)
+                }
+
+
+            });
+
+
+        }
+ function addProduct(){
+
+ $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:8000/form/data',
+                dataType: 'json',
+                async: true,
+                data: {
+                   // csrfmiddlewaretoken: '{{csrf_token}}',
+                    Name: $('#name').val(),
+                    Description: $('#description').val(),
+                    Price: $('#price').val(),
+                },
+                success: function(data) {
+                    $('#test').append(data);
+                    console.log(data);
+                    $("#tbody").empty();
+                    $.each(data,function(key,value){
+                         showItems();
+                    });
+
+                },
+                error: function(error_data){
+                    console.log(error_data)
+                }
+
+
+            });
+
+        }
+
+function updateProduct(clicked_id){
+
+$.ajax({
+                type: 'PUT',
+                url: 'http://127.0.0.1:8000/form/data',
+                dataType: 'json',
+                async: true,
+                data: {
+                   // csrfmiddlewaretoken: '{{csrf_token}}',
+                    Name: $('#name').val(),
+                    Description: $('#description').val(),
+                    Price: $('#price').val(),
+                },
+                success: function(data) {
+                    $('#test').append(data);
+                    console.log(data);
+                    $("#tbody").empty();
+                    $.each(data,function(key,value){
+                         showItems();
+                    });
+
+                },
+                error: function(error_data){
+                    console.log(error_data)
+                }
+
+
+            });
+
+}
+
+
+	    </script>
+        <script type="text/javascript">
+
+
+
+        </script>
+    </head>
+		<body>
+                <div id="product_table" >
+                    <table style="width: 100%" border="1">
+                    <thead>
+                         <tr>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                         <tbody id="tbody">
+                        </tbody>
+                    </table>
+                </div>
+			<br>
+
+				<form method="POST" id = "addform" onsubmit="return false">
+                    {% csrf_token %}
+        			Product name:<br>
+        			<input type="text" id="name"><br>
+        			Product Desc:<br>
+        			<input type="text" id="description"><br>
+        			Product Price: <br>
+       				 <input type="text" id="price"> <br>
+					<button method = "POST" type="submit" onclick="addProduct()">Add Product</button> <br>
+    			</form>
+			</div>
+            <div id = 'test'>
+
+            </div>
+		</body>
+
+
+
+</html>
+

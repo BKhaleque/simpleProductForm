@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form method="post" id = "addform">
+        {{ form.as_p }}
+        Product name:<br>
+        <input type="text" id="product_name"><br>
+        Product Desc:<br>
+        <input type="text" id="product_description">
+        Product Price:<br>
+        <input type="text" id="product_price">
+        {{ form.as_p }}
+        <button type="submit">Add Product</button>
+    </form>
+</body>
+<script src = "jquery-3.3.1.min.js" >
+    $("#addform").on('submit',function () {
+      var product_name = $(#product_name).val();
+      var product_desc = $(#product_name).val();
+      var product_price = $(#product_name).val();
+
+      $.ajax({
+        url: '/product_add/',
+        data: {
+          'product name': product_name
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data.is_taken) {
+            alert("A product with this product name already exists.");
+          }
+        }
+      });
+
+    });
+  </script>
+</html>
