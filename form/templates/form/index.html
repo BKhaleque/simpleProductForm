@@ -15,14 +15,22 @@
         });
 		
         function deleteProduct(clicked_id){
+		
              $.ajax({
                 type: 'DELETE',
+				url: 'http://127.0.0.1:8000/form/data',
 				dataType: 'json',
-				data: 'id='+clicked_id,
+				data:{ 'ID':clicked_id,
+				},
                 success: function() {
+				    console.log('Sucess');
+
                     $("#tbody").empty();
                         showItems();
-                    }
+                    },error: function(error_data){
+                    console.log(error_data)
+                }
+
 
                 });
             }
@@ -46,8 +54,8 @@
                         + "<td id = " + value.ID+ ">" + value.ID + "</td>"
                         + "<td> <a href=/form/"+value.ID+">" + value.Name + "</a></td>"
                         + "<td> <text id = " + value.name + "price>" + value.Price
-                        + "</text><button onclick= updateProduct(this.id) name = csrfmiddlewaretoken method = PUT id = " + value.ID + "> Update </button>"
-                        + "<button onclick= deleteProduct(this.id) name = csrfmiddlewaretoken method = DELETE id = " + value.ID + "> Delete </button>"
+                        + "</text><button onclick= updateProduct(this.id) method = PUT id = " + value.ID + "> Update </button>"
+                        + "<button onclick= deleteProduct(this.id) method = DELETE id = " + value.ID + "> Delete </button>"
                         + "</td>"
                         + "</tr>";
                         $('#tbody').append(eachrow);
@@ -68,8 +76,6 @@
  $.ajax({
                 type: 'POST',
                 url: 'http://127.0.0.1:8000/form/data',
-                dataType: 'json',
-                async: true,
                 data: {
                    // csrfmiddlewaretoken: '{{csrf_token}}',
                     Name: $('#name').val(),
@@ -77,12 +83,10 @@
                     Price: $('#price').val(),
                 },
                 success: function(data) {
-                    $('#test').append(data);
                     console.log(data);
                     $("#tbody").empty();
-                    $.each(data,function(key,value){
                          showItems();
-                    });
+                   
 
                 },
                 error: function(error_data){
@@ -96,20 +100,18 @@
 
 function updateProduct(clicked_id){
 
-$.ajax({
+	$.ajax({
                 type: 'PUT',
                 url: 'http://127.0.0.1:8000/form/data',
-                dataType: 'json',
-                async: true,
                 data: {
                    // csrfmiddlewaretoken: '{{csrf_token}}',
-                    Name: $('#name').val(),
-                    Description: $('#description').val(),
-                    Price: $('#price').val(),
+				    'ID': clicked_id,
+                    'Name': $('#name').val(),
+                    'Description': $('#description').val(),
+                    'Price': $('#price').val(),
                 },
                 success: function(data) {
-                    $('#test').append(data);
-                    console.log(data);
+                    console.log('Sucess');
                     $("#tbody").empty();
                     $.each(data,function(key,value){
                          showItems();
@@ -158,7 +160,7 @@ $.ajax({
         			<input type="text" id="description"><br>
         			Product Price: <br>
        				 <input type="text" id="price"> <br>
-					<button method = "POST" type="submit" onclick="addProduct()">Add Product</button> <br>
+					<button type="submit" onclick="addProduct()">Add Product</button> <br>
     			</form>
 			</div>
             <div id = 'test'>
